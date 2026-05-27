@@ -1,2 +1,3 @@
 BaseAddress
 DefaultConnection
+ApplicationInsights
