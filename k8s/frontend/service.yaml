@@ -5,7 +5,7 @@ metadata:
   labels:
     app: hospital-frontend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: hospital-frontend
   ports:
