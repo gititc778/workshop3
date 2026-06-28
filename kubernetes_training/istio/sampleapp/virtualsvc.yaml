@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: sampleapp
+spec:
+  hosts:
+  - sampleapp.devops.org
+
+  gateways:
+  - sampleapp-gateway
+
+  http:
+  - route:
+    - destination:
+        host: sampleapp-svc
+        port:
+          number: 80

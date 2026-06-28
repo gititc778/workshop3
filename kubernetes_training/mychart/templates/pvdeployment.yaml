@@ -1,0 +1,31 @@
+{{- if .Values.pvDeployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mychart.fullname" . }}-pv-deployment
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.pvDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: nginx-pv
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: nginx-pv
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: nginx
+          image: {{ .Values.pvDeployment.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: nginx-storage
+              mountPath: {{ .Values.pvDeployment.mountPath }}
+      volumes:
+        - name: nginx-storage
+          persistentVolumeClaim:
+            claimName: {{ include "mychart.fullname" . }}-pvc
+{{- end }}

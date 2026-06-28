@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      initContainers:
+      - name: init-config
+        image: busybox
+        command: ['sh', '-c', 'echo "Initializing config..." > /app/config.txt']
+        volumeMounts:
+        - name: app-data
+          mountPath: /app
+      containers:
+      - name: main-app
+        image: dockeritc778/studentapp:v11
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: app-data
+          mountPath: /app
+      - name: sidecar-logger
+        image: busybox
+        command: ['sh', '-c', 'tail -f /app/config.txt']
+        volumeMounts:
+        - name: app-data
+          mountPath: /app
+      volumes:
+      - name: app-data
+        emptyDir: {}

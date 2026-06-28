@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-pod
+spec:
+  containers:
+  - name: app
+    image: nginx
+    volumeMounts:
+    - name: scratch
+      mountPath: /tmp/scratch       # emptyDir
+    - name: host-data
+      mountPath: /data               # hostPath
+  volumes:
+  - name: scratch
+    emptyDir: {}
+  - name: host-data
+    hostPath:
+      path: /mnt/data
+      type: DirectoryOrCreate

@@ -1,0 +1,62 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Kubernetes secrets
+*secret*.yaml
+secrets.yaml
+
+# Certificates
+*.crt
+*.key
+*.pem
+*.p12
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Helm
+charts/
+*.tgz
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+
+# Node.js
+node_modules/
+
+# Mac/Linux
+*~
+
+# Minikube
+.minikube/
+
+# Istio downloads (optional)
+istio-*/

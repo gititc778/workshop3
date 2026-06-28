@@ -1,0 +1,30 @@
+{{ .Chart.Name }} ({{ .Chart.Version }}) has been deployed as release "{{ .Release.Name }}".
+
+Resources created (toggle each via values.yaml):
+{{- if .Values.configMap.enabled }}
+  - ConfigMap:   {{ include "mychart.fullname" . }}-config
+{{- end }}
+{{- if .Values.secret.enabled }}
+  - Secret:      {{ include "mychart.fullname" . }}-secret
+{{- end }}
+{{- if .Values.deployment.enabled }}
+  - Deployment:  {{ include "mychart.fullname" . }}-deployment
+{{- end }}
+{{- if .Values.service.enabled }}
+  - Service:     {{ include "mychart.fullname" . }}-service
+{{- end }}
+{{- if .Values.statefulset.enabled }}
+  - StatefulSet: {{ include "mychart.fullname" . }}-sts
+{{- end }}
+{{- if .Values.pod.enabled }}
+  - Pod:         {{ include "mychart.fullname" . }}-pod
+{{- end }}
+{{- if .Values.pvDeployment.enabled }}
+  - Deployment:  {{ include "mychart.fullname" . }}-pv-deployment
+{{- end }}
+{{- if .Values.ingress.enabled }}
+  - Ingress:     {{ include "mychart.fullname" . }}-ingress
+{{- end }}
+
+Inspect with:
+  kubectl get all -l app.kubernetes.io/instance={{ .Release.Name }}

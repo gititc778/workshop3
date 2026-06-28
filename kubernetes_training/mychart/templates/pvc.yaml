@@ -1,0 +1,15 @@
+{{- if .Values.demoPvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mychart.fullname" . }}-demo-pvc
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.demoPvc.storageClassName | quote }}
+  accessModes:
+    {{- toYaml .Values.demoPvc.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.demoPvc.storage }}
+{{- end }}

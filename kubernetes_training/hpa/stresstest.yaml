@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hey-load
+spec:
+  containers:
+  - name: hey
+    image: williamyeh/hey:latest
+    args: ["-c", "50", "-z", "1h", "http://nginx-deployment.dev.svc.cluster.local"]
+  restartPolicy: Never

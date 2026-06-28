@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sampleapp-deployment-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sampleapp
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+        version: v1
+    spec:
+      containers:
+      - name: sampleapp
+        image: dockeritc778/sampleapp:20260625.11
+        ports:
+        - containerPort: 5000
+

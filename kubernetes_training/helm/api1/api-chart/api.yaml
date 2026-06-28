@@ -1,0 +1,106 @@
+---
+# Source: api-chart/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api1-api-chart
+  labels:
+    helm.sh/chart: api-chart-0.1.0
+    app.kubernetes.io/name: api-chart
+    app.kubernetes.io/instance: api1
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: api-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: api1-api-chart
+  labels:
+    helm.sh/chart: api-chart-0.1.0
+    app.kubernetes.io/name: api-chart
+    app.kubernetes.io/instance: api1
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: api-chart
+    app.kubernetes.io/instance: api1
+---
+# Source: api-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api1-api-chart
+  labels:
+    helm.sh/chart: api-chart-0.1.0
+    app.kubernetes.io/name: api-chart
+    app.kubernetes.io/instance: api1
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api-chart
+      app.kubernetes.io/instance: api1
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: api-chart-0.1.0
+        app.kubernetes.io/name: api-chart
+        app.kubernetes.io/instance: api1
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: api1-api-chart
+      securityContext:
+        {}
+      containers:
+        - name: api-chart
+          securityContext:
+            {}
+          image: "nginx:alpine3.23-perl"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+---
+# Source: api-chart/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "api1-api-chart-test-connection"
+  labels:
+    helm.sh/chart: api-chart-0.1.0
+    app.kubernetes.io/name: api-chart
+    app.kubernetes.io/instance: api1
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['api1-api-chart:80']
+  restartPolicy: Never

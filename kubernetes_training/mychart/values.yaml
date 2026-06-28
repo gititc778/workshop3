@@ -1,0 +1,97 @@
+# Shared image used by the nginx workloads
+image:
+  repository: nginx
+  tag: "1.14.2"
+  pullPolicy: IfNotPresent
+
+# ConfigMap (configmap.yaml)
+configMap:
+  enabled: true
+  data:
+    APP_ENV: production
+    LOG_LEVEL: debug
+
+# Secret (secret.yaml)
+secret:
+  enabled: true
+  stringData:
+    DB_USER: user1
+    DB_PASSWORD: example
+
+# Main nginx Deployment (deployment.yaml)
+deployment:
+  enabled: true
+  replicas: 2
+  containerPort: 80
+  # Pull env from the chart's ConfigMap / Secret
+  envFromConfigMap: true
+  envFromSecret: true
+
+# Service fronting the deployment (deploymentsvc.yaml)
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+  # selector key/value that pods are matched on
+  selectorLabel: app
+
+# StatefulSet (sts.yaml)
+statefulset:
+  enabled: true
+  replicas: 3
+  serviceName: nginx-headless
+  containerPort: 80
+
+# Standalone pod with emptyDir + hostPath volumes (pod.yaml)
+pod:
+  enabled: true
+  image: nginx
+  hostPath:
+    path: /mnt/data
+    type: DirectoryOrCreate
+
+# PersistentVolume + matching PVC (pv.yaml)
+persistentVolume:
+  enabled: true
+  capacity: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data
+    type: DirectoryOrCreate
+  reclaimPolicy: Retain
+
+# PVC bound to the PV above (pv.yaml second doc)
+persistentVolumeClaim:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  storage: 1Gi
+
+# Standalone demo PVC (pvc.yaml)
+demoPvc:
+  enabled: true
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  storage: 1Gi
+
+# PV-backed Deployment that mounts the PVC (pvdeployment.yaml)
+pvDeployment:
+  enabled: true
+  replicas: 1
+  image: nginx:latest
+  mountPath: /usr/share/nginx/html
+
+# Ingress (ingress.yaml)
+ingress:
+  enabled: true
+  hosts:
+    - host: devops.itclabs.live
+      serviceName: nginx-service
+      servicePort: 5000
+    - host: dev.itclabs.live
+      serviceName: dev-service
+      servicePort: 5000
